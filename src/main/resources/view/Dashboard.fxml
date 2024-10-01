@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController" spacing="20" alignment="CENTER">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Left Side: Book List -->
+    <VBox spacing="15">
+        <Label text="Available Books" style="-fx-font-size: 16px;"/>
+        <ListView fx:id="bookListView" prefWidth="200" prefHeight="300"/>
+        <Button text="Add to Cart" onAction="#addToCart" maxWidth="100"/>
+    </VBox>
+
+    <!-- Right Side: Shopping Cart -->
+    <VBox spacing="15">
+        <Label text="Shopping Cart" style="-fx-font-size: 16px;"/>
+        <TextArea fx:id="shoppingCartArea" prefWidth="300" prefHeight="300" editable="false"/>
+        <Button text="Checkout" onAction="#checkout" maxWidth="100"/>
+    </VBox>
+</HBox>
