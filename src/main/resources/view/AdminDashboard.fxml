@@ -1,26 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminController" alignment="CENTER" spacing="15">
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
-
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminController" spacing="20" alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.171">
     <!-- Title Label -->
-    <Label text="Admin Dashboard - Book Inventory" style="-fx-font-size: 18px;"/>
+    <Label text="Admin Dashboard - Manage Book Inventory" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-    <!-- List of Books in Inventory -->
-    <ListView fx:id="bookInventoryListView" prefWidth="300" prefHeight="300"/>
+    <!-- TableView for displaying books -->
+    <TableView fx:id="bookTableView" prefWidth="500" prefHeight="200">
+        <columns>
+            <!-- Columns for book attributes -->
+            <TableColumn fx:id="titleColumn" text="Book Title" prefWidth="150"/>
+            <TableColumn fx:id="authorColumn" text="Author" prefWidth="100"/>
+            <TableColumn fx:id="priceColumn" text="Price (AUD)" prefWidth="75"/>
+            <TableColumn fx:id="copiesColumn" text="# Copies" prefWidth="75"/>
+            <TableColumn fx:id="soldColumn" text="# Sold" prefWidth="75"/>
+        </columns>
+    </TableView>
 
-    <!-- Input Field for Updating Stock -->
-    <TextField fx:id="stockUpdateField" promptText="Enter new stock value" maxWidth="150"/>
+    <!-- TextFields for entering book details -->
+    <HBox spacing="15">
+        <TextField fx:id="titleField" promptText="Title"/>
+        <TextField fx:id="authorField" promptText="Author"/>
+        <TextField fx:id="priceField" promptText="Price (AUD)"/>
+        <TextField fx:id="copiesField" promptText="# Copies"/>
+        <TextField fx:id="soldField" promptText="# Sold"/>
+    </HBox>
 
-    <!-- Button to Update Stock -->
-    <Button text="Update Stock" onAction="#updateStock" maxWidth="120"/>
+    <!-- Buttons for add, update, and delete operations -->
+    <HBox spacing="15">
+        <Button text="Add Book" fx:id="addButton" onAction="#addBook"/>
+        <Button text="Update Book" fx:id="updateButton" onAction="#updateBook"/>
+        <Button text="Delete Book" fx:id="deleteButton" onAction="#deleteBook"/>
+    </HBox>
 </VBox>
