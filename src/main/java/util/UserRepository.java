@@ -2,23 +2,19 @@ package util;
 
 import model.User;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class UserRepository {
 
     private static UserRepository instance;
-    private List<User> userList;
 
-    // Private constructor to enforce Singleton pattern
     private UserRepository() {
-        userList = new ArrayList<>();
-        // Add a default admin user for testing (optional)
-        userList.add(new User("admin", "admin123", "Admin", "User"));
     }
 
-    // Get the singleton instance of UserRepository
     public static UserRepository getInstance() {
         if (instance == null) {
             instance = new UserRepository();
@@ -26,25 +22,72 @@ public class UserRepository {
         return instance;
     }
 
-    // Add a new user to the repository
+    // Method to add a new user to the database
     public void addUser(User user) {
-        userList.add(user);
+        String sql = "INSERT INTO Users(username, password, firstName, lastName, role) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = DatabaseHelper.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getFirstName());
+            pstmt.setString(4, user.getLastName());
+            pstmt.setString(5, user.getRole());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    // Check if a username already exists
-    public boolean usernameExists(String username) {
-        return userList.stream().anyMatch(user -> user.getUsername().equals(username));
-    }
-
-    // Method to validate the username and password combination
+    // Method to validate user credentials
     public Optional<User> validateCredentials(String username, String password) {
-        return userList.stream()
-                .filter(user -> user.getUsername().equals(username) && user.getPassword().equals(password))
-                .findFirst();
+        String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
+        try (Connection conn = DatabaseHelper.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                User user = new User(
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("role")
+                );
+                return Optional.of(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 
-    // Get the list of all users (if needed)
-    public List<User> getUserList() {
-        return userList;
+    // Method to get user by username
+    public Optional<User> getUserByUsername(String username) {
+        String sql = "SELECT * FROM Users WHERE username = ?";
+        try (Connection conn = DatabaseHelper.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                User user = new User(
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("role")
+                );
+                return Optional.of(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 }

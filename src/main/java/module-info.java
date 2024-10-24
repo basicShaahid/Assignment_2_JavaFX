@@ -1,8 +1,10 @@
-module ReadingRoomGUI {
+module com.example.readingroomgui {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
-    // Open and export the controller package to JavaFX
-    opens controller to javafx.fxml;
-    exports controller;
+    opens controller to javafx.fxml;  // Open 'controller' package
+    opens model to javafx.fxml;       // Open 'model' package, if needed
+    exports controller;               // Export 'controller' package
+    exports model;                    // Export 'model' package
 }

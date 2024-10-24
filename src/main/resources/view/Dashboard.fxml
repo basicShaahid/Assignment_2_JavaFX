@@ -1,34 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController" spacing="20" alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.171">
-    <!-- Title Label -->
-    <Label text="Welcome to The Reading Room" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-
-    <!-- HBox to hold the ListView and Shopping Cart -->
-    <HBox spacing="15" alignment="CENTER">
-        <!-- ListView for displaying available books -->
-        <VBox>
-            <Label text="Available Books" style="-fx-font-size: 14px;"/>
-            <ListView fx:id="bookListView" prefHeight="200" prefWidth="250"/>
-        </VBox>
-
-        <!-- TextArea for shopping cart -->
-        <VBox>
-            <Label text="Shopping Cart" style="-fx-font-size: 14px;"/>
-            <TextArea fx:id="shoppingCartArea" prefHeight="200" prefWidth="250" editable="false"/>
-        </VBox>
-    </HBox>
-
-    <!-- Buttons to add books and proceed to checkout -->
-    <HBox spacing="15" alignment="CENTER">
-        <Button text="Add to Cart" fx:id="addToCartButton" onAction="#addToCart"/>
-        <Button text="Checkout" fx:id="checkoutButton" onAction="#checkout"/>
-    </HBox>
-</VBox>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.DashboardController">
+    <children>
+        <TableView fx:id="bookTableView" layoutX="14.0" layoutY="40.0" prefHeight="200.0" prefWidth="550.0">
+            <columns>
+                <TableColumn fx:id="titleColumn" text="Title" />
+                <TableColumn fx:id="authorColumn" text="Author" />
+                <TableColumn fx:id="copiesColumn" text="Copies" />
+                <TableColumn fx:id="priceColumn" text="Price (AUD)" />
+            </columns>
+        </TableView>
+        <Button fx:id="logoutButton" layoutX="14.0" layoutY="260.0" text="Logout" onAction="#handleLogoutButtonAction" />
+    </children>
+</AnchorPane>

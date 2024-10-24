@@ -8,6 +8,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Book;
+import util.BookRepository;
 
 public class AdminController {
 
@@ -48,13 +49,8 @@ public class AdminController {
 
     @FXML
     private void initialize() {
-        // Initialize the book inventory with some sample data
-        bookInventoryList = FXCollections.observableArrayList(
-                new Book("Absolute Java", "Savitch", 10, 50, 142),
-                new Book("JAVA: How to Program", "Deitel and Deitel", 100, 70, 475),
-                new Book("Computing Concepts with JAVA 8 Essentials", "Horstman", 500, 89, 60),
-                new Book("Java Software Solutions", "Lewis and Loftus", 500, 99, 12)
-        );
+        // Initialize the book inventory by fetching from the repository
+        bookInventoryList = FXCollections.observableArrayList(BookRepository.getInstance().getAllBooks());
 
         // Set up the table columns
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -77,8 +73,11 @@ public class AdminController {
         int soldCopies = Integer.parseInt(soldField.getText());
 
         // Create a new Book object and add it to the inventory list
-        Book newBook = new Book(title, author, copies, price, soldCopies);
+        Book newBook = new Book(0, title, author, copies, price, soldCopies); // ID is 0 as it will be auto-generated
         bookInventoryList.add(newBook);
+
+        // Add the book to the database
+        BookRepository.getInstance().addBook(newBook);
     }
 
     @FXML
@@ -92,6 +91,9 @@ public class AdminController {
             selectedBook.setPhysicalCopies(Integer.parseInt(copiesField.getText()));
             selectedBook.setSoldCopies(Integer.parseInt(soldField.getText()));
 
+            // Update the book in the database
+            BookRepository.getInstance().updateBook(selectedBook);
+
             // Refresh the TableView to show updated values
             bookTableView.refresh();
         }
@@ -99,10 +101,14 @@ public class AdminController {
 
     @FXML
     private void deleteBook() {
-        // Remove the selected book from the inventory list
+        // Get the selected book from the TableView
         Book selectedBook = bookTableView.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
+            // Remove from the observable list
             bookInventoryList.remove(selectedBook);
+
+            // Delete from the database by book ID
+            BookRepository.getInstance().deleteBook(selectedBook.getId());
         }
     }
 }

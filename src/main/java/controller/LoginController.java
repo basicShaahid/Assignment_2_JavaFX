@@ -3,6 +3,7 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -24,54 +25,82 @@ public class LoginController {
     private PasswordField passwordField;
 
     @FXML
-    private Label errorMessageLabel;
+    private Label errorLabel;
 
     @FXML
     private void handleLoginButtonAction(ActionEvent event) {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        // Validate credentials using the UserRepository
+        // Validate credentials
         Optional<User> userOptional = UserRepository.getInstance().validateCredentials(username, password);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            // Check if the user is an Admin (you can adjust this based on your role management)
-            if (user.getUsername().equals("admin")) {
-                navigateTo("AdminDashboard.fxml", event); // Navigate to Admin Dashboard
+
+            // Navigate based on the user's role
+            if (user.getRole().equalsIgnoreCase("admin")) {
+                navigateToAdminDashboard(event);
             } else {
-                navigateTo("Dashboard.fxml", event); // Navigate to Customer Dashboard
+                navigateToUserDashboard(event);
             }
         } else {
-            // Show error message if login failed
-            errorMessageLabel.setText("Invalid username or password. Please try again.");
+            // Show error if credentials are invalid
+            errorLabel.setText("Invalid username or password.");
         }
     }
 
-    // Method to navigate to the specified FXML file
-    private void navigateTo(String fxmlFile, ActionEvent event) {
+    // Method to navigate to the Admin Dashboard
+    private void navigateToAdminDashboard(ActionEvent event) {
         try {
+            // Load the FXML for the admin dashboard
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AdminDashboard.fxml"));
+            Parent adminDashboardRoot = loader.load();
+
+            // Set up the scene
+            Scene adminDashboardScene = new Scene(adminDashboardRoot);
+
+            // Get the current stage and switch the scene
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("/view/" + fxmlFile));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(adminDashboardScene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Method to navigate to registration screen if the user does not have an account
+    // Method to navigate to the User Dashboard
+    private void navigateToUserDashboard(ActionEvent event) {
+        try {
+            // Load the FXML for the user dashboard
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Dashboard.fxml"));
+            Parent userDashboardRoot = loader.load();
+
+            // Set up the scene
+            Scene userDashboardScene = new Scene(userDashboardRoot);
+
+            // Get the current stage and switch the scene
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(userDashboardScene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void navigateToRegistrationScreen(ActionEvent event) {
         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Registration.fxml"));
+            Parent registrationRoot = loader.load();
+
+            // Set the new scene for the registration
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("/view/Registration.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(registrationRoot));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

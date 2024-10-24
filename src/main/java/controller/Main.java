@@ -7,9 +7,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));  // Ensure the path is correct
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setTitle("The Reading Room - Login");
         primaryStage.setScene(scene);

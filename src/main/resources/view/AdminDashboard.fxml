@@ -1,42 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminController" spacing="20" alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.171">
-    <!-- Title Label -->
-    <Label text="Admin Dashboard - Manage Book Inventory" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.AdminController">
+    <center>
+        <VBox spacing="10" alignment="center">
+            <!-- Title Label -->
+            <Label text="Admin Dashboard - Manage Books" style="-fx-font-size: 16px;"/>
 
-    <!-- TableView for displaying books -->
-    <TableView fx:id="bookTableView" prefWidth="500" prefHeight="200">
-        <columns>
-            <!-- Columns for book attributes -->
-            <TableColumn fx:id="titleColumn" text="Book Title" prefWidth="150"/>
-            <TableColumn fx:id="authorColumn" text="Author" prefWidth="100"/>
-            <TableColumn fx:id="priceColumn" text="Price (AUD)" prefWidth="75"/>
-            <TableColumn fx:id="copiesColumn" text="# Copies" prefWidth="75"/>
-            <TableColumn fx:id="soldColumn" text="# Sold" prefWidth="75"/>
-        </columns>
-    </TableView>
+            <!-- TableView for displaying books -->
+            <TableView fx:id="bookTableView">
+                <columns>
+                    <TableColumn text="Title" fx:id="titleColumn"/>
+                    <TableColumn text="Author" fx:id="authorColumn"/>
+                    <TableColumn text="Price (AUD)" fx:id="priceColumn"/>
+                    <TableColumn text="Physical Copies" fx:id="copiesColumn"/>
+                    <TableColumn text="Sold Copies" fx:id="soldColumn"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
 
-    <!-- TextFields for entering book details -->
-    <HBox spacing="15">
-        <TextField fx:id="titleField" promptText="Title"/>
-        <TextField fx:id="authorField" promptText="Author"/>
-        <TextField fx:id="priceField" promptText="Price (AUD)"/>
-        <TextField fx:id="copiesField" promptText="# Copies"/>
-        <TextField fx:id="soldField" promptText="# Sold"/>
-    </HBox>
+    <bottom>
+        <VBox spacing="10" alignment="center">
+            <GridPane hgap="10" vgap="10">
+                <!-- Form fields for book details -->
+                <Label text="Title:"/>
+                <TextField fx:id="titleField"/>
+                <Label text="Author:"/>
+                <TextField fx:id="authorField"/>
+                <Label text="Price (AUD):"/>
+                <TextField fx:id="priceField"/>
+                <Label text="Physical Copies:"/>
+                <TextField fx:id="copiesField"/>
+                <Label text="Sold Copies:"/>
+                <TextField fx:id="soldField"/>
+            </GridPane>
 
-    <!-- Buttons for add, update, and delete operations -->
-    <HBox spacing="15">
-        <Button text="Add Book" fx:id="addButton" onAction="#addBook"/>
-        <Button text="Update Book" fx:id="updateButton" onAction="#updateBook"/>
-        <Button text="Delete Book" fx:id="deleteButton" onAction="#deleteBook"/>
-    </HBox>
-</VBox>
+            <!-- Buttons for managing books -->
+            <HBox spacing="10" alignment="center">
+                <Button text="Add Book" onAction="#addBook"/>
+                <Button text="Update Book" onAction="#updateBook"/>
+                <Button text="Delete Book" onAction="#deleteBook"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>
