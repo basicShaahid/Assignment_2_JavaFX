@@ -6,11 +6,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.User;
+import util.ShoppingCartRepository;
 import util.UserRepository;
 
 import java.io.IOException;
@@ -27,64 +29,43 @@ public class LoginController {
     @FXML
     private Label errorLabel;
 
+    private User authenticateUser(String username, String password) {
+        Optional<User> userOptional = UserRepository.getInstance().validateCredentials(username, password);
+        return userOptional.orElse(null); // Return the user if found, otherwise null
+    }
+
     @FXML
     private void handleLoginButtonAction(ActionEvent event) {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        // Validate credentials
-        Optional<User> userOptional = UserRepository.getInstance().validateCredentials(username, password);
+        User loggedInUser = authenticateUser(username, password);
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            // Navigate based on the user's role
-            if (user.getRole().equalsIgnoreCase("admin")) {
-                navigateToAdminDashboard(event);
-            } else {
-                navigateToUserDashboard(event);
-            }
+        if (loggedInUser != null) {
+            loadDashboard(loggedInUser, event);
         } else {
-            // Show error if credentials are invalid
-            errorLabel.setText("Invalid username or password.");
+            showAlert("Error", "Invalid username or password.");
         }
     }
 
-    // Method to navigate to the Admin Dashboard
-    private void navigateToAdminDashboard(ActionEvent event) {
+    private void loadDashboard(User user, ActionEvent event) {
         try {
-            // Load the FXML for the admin dashboard
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AdminDashboard.fxml"));
-            Parent adminDashboardRoot = loader.load();
-
-            // Set up the scene
-            Scene adminDashboardScene = new Scene(adminDashboardRoot);
-
-            // Get the current stage and switch the scene
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(adminDashboardScene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Method to navigate to the User Dashboard
-    private void navigateToUserDashboard(ActionEvent event) {
-        try {
-            // Load the FXML for the user dashboard
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Dashboard.fxml"));
-            Parent userDashboardRoot = loader.load();
+            Parent dashboardRoot = loader.load();
 
-            // Set up the scene
-            Scene userDashboardScene = new Scene(userDashboardRoot);
+            // Initialize the DashboardController with the logged-in user and shopping cart repository
+            DashboardController dashboardController = loader.getController();
+            dashboardController.setUser(user);
+            dashboardController.setShoppingCartRepository(new ShoppingCartRepository());
 
-            // Get the current stage and switch the scene
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(userDashboardScene);
+            // Switch to the dashboard scene
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(dashboardRoot));
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert("Error", "Failed to load the dashboard.");
         }
     }
 
@@ -94,13 +75,20 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Registration.fxml"));
             Parent registrationRoot = loader.load();
 
-            // Set the new scene for the registration
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            // Set the new scene for registration
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(registrationRoot));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert("Error", "Failed to load the registration screen.");
         }
     }
 
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }

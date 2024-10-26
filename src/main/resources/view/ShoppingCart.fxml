@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.ShoppingCartController">
+    <children>
+        <!-- Shopping Cart TableView -->
+        <TableView fx:id="cartTableView" layoutX="14.0" layoutY="40.0" prefHeight="200.0" prefWidth="550.0">
+            <columns>
+                <TableColumn fx:id="titleColumn" text="Title" />
+                <TableColumn fx:id="authorColumn" text="Author" />
+                <TableColumn fx:id="priceColumn" text="Price (AUD)" />
+                <TableColumn fx:id="quantityColumn" text="Quantity" />
+            </columns>
+        </TableView>
+
+        <!-- Quantity Input Field -->
+        <TextField fx:id="quantityTextField" layoutX="14.0" layoutY="260.0" promptText="Enter quantity"/>
+
+        <!-- Total Amount Display Field (Ensure this matches fx:id in ShoppingCartController) -->
+        <TextField fx:id="totalAmountField" layoutX="14.0" layoutY="300.0" promptText="Total Amount" editable="false" />
+
+        <!-- Buttons -->
+        <Button fx:id="addToCartButton" layoutX="180.0" layoutY="260.0" text="Add to Cart" onAction="#handleAddToCartButtonAction" />
+        <Button fx:id="updateQuantityButton" layoutX="280.0" layoutY="260.0" text="Update Quantity" onAction="#handleUpdateQuantityButtonAction" />
+        <Button fx:id="removeItemButton" layoutX="380.0" layoutY="260.0" text="Remove Item" onAction="#handleRemoveItemButtonAction" />
+        <Button fx:id="backButton" layoutX="480.0" layoutY="260.0" text="Back" onAction="#handleBackToDashboardAction" />
+    </children>
+</AnchorPane>

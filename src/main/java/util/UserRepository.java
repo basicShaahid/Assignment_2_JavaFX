@@ -15,6 +15,7 @@ public class UserRepository {
     private UserRepository() {
     }
 
+
     public static UserRepository getInstance() {
         if (instance == null) {
             instance = new UserRepository();

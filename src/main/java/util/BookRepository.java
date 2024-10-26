@@ -1,10 +1,8 @@
 package util;
 
 import model.Book;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +67,7 @@ public class BookRepository {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Book book = new Book(rs.getInt("id"),  // Fetch the unique id
+                Book book = new Book(rs.getInt("id"),
                         rs.getString("title"),
                         rs.getString("author"),
                         rs.getInt("physicalCopies"),
@@ -80,9 +78,36 @@ public class BookRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return books;
     }
+
+    // Method to fetch the top 5 books based on sold copies
+    public List<Book> getTop5Books() {
+        List<Book> topBooks = new ArrayList<>();
+        String sql = "SELECT * FROM Books ORDER BY soldCopies DESC LIMIT 5";
+
+        try (Connection conn = DatabaseHelper.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Book book = new Book(
+                        resultSet.getInt("id"),
+                        resultSet.getString("title"),
+                        resultSet.getString("author"),
+                        resultSet.getInt("physicalCopies"),
+                        resultSet.getDouble("price"),
+                        resultSet.getInt("soldCopies")
+                );
+                topBooks.add(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topBooks;
+    }
+
 
     // Method to add a new book to the database
     public void addBook(Book book) {
@@ -139,4 +164,6 @@ public class BookRepository {
             e.printStackTrace();
         }
     }
+
+
 }
