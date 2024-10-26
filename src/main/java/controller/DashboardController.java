@@ -186,6 +186,32 @@ public class DashboardController {
         }
     }
 
+    // In DashboardController.java
+
+    @FXML
+    public void handleEditProfileButtonAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditProfile.fxml"));
+            Parent editProfileRoot = loader.load();
+
+            EditProfileController editProfileController = loader.getController();
+            editProfileController.setCurrentUser(currentUser);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(editProfileRoot));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load the Edit Profile screen. Check file path and controller setup.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showAlert("Unexpected Error", "An error occurred: " + ex.getMessage());
+        }
+    }
+
+
+
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);

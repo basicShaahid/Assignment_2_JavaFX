@@ -4,13 +4,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import model.ShoppingCartItem;
 import model.User;
 import util.DatabaseHelper;
 import util.ShoppingCartRepository;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -132,41 +138,66 @@ public class ShoppingCartController {
     // Event handler for the "Update Quantity" button
     @FXML
     private void handleUpdateQuantityButtonAction(ActionEvent event) {
-        ShoppingCartItem selectedItem = shoppingCartTableView.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            try {
-                int newQuantity = Integer.parseInt(quantityTextField.getText());
-                selectedItem.setQuantity(newQuantity);
-                shoppingCartRepository.updateCartItemQuantity(selectedItem);
-                loadCartItems();
-            } catch (NumberFormatException e) {
-                showAlert("Error", "Please enter a valid quantity.");
+        // Get the selected item from the cart
+        ShoppingCartItem selectedItem = cartTableView.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) {
+            showAlert("Warning", "Please select an item to update.");
+            return;
+        }
+
+        try {
+            // Parse the new quantity from the text field
+            int newQuantity = Integer.parseInt(quantityTextField.getText());
+
+            // Ensure the quantity is positive
+            if (newQuantity <= 0) {
+                showAlert("Error", "Quantity must be a positive number.");
+                return;
             }
-        } else {
-            showAlert("Warning", "No item selected. Please select an item to update.");
+
+            // Update the quantity in the selected item and in the database
+            selectedItem.setQuantity(newQuantity);
+            shoppingCartRepository.updateCartItemQuantity(selectedItem);
+
+            // Refresh the cart view to show the updated quantity and total
+            loadCartItems();
+            updateTotalAmount();
+
+            // Clear the quantity text field after updating
+            quantityTextField.clear();
+
+            showAlert("Success", "Quantity updated successfully.");
+
+        } catch (NumberFormatException e) {
+            showAlert("Error", "Please enter a valid number for quantity.");
         }
     }
+
 
     // Event handler for the "Remove Item" button
     @FXML
     private void handleRemoveItemButtonAction(ActionEvent event) {
-        ShoppingCartItem selectedItem = shoppingCartTableView.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            shoppingCartRepository.removeItem(selectedItem.getId());
-            cartItems.remove(selectedItem);
-            updateTotalAmount();
-            showAlert("Success", "Item removed from cart.");
-        } else {
-            showAlert("Warning", "No item selected. Please select an item to remove.");
+        // Get the selected item from the cart
+        ShoppingCartItem selectedItem = cartTableView.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) {
+            showAlert("Warning", "Please select an item to remove.");
+            return;
         }
+
+        // Confirm removal (Optional)
+        boolean confirm = showConfirmation("Remove Item", "Are you sure you want to remove this item from the cart?");
+        if (!confirm) return;
+
+        // Remove the item from the database
+        shoppingCartRepository.removeItem(selectedItem.getId());
+
+        // Remove the item from the TableView and update the total
+        cartItems.remove(selectedItem);
+        updateTotalAmount();
+
+        showAlert("Success", "Item removed from cart.");
     }
 
-    // Event handler for the "Back" button
-    @FXML
-    private void handleBackToDashboardAction(ActionEvent event) {
-        // Implement navigation back to the dashboard
-        showAlert("Information", "Navigation back to dashboard is not implemented.");
-    }
 
     // Event handler for the "Checkout" button
     @FXML
@@ -212,6 +243,40 @@ public class ShoppingCartController {
             }
         }
     }
+
+    @FXML
+    private void handleBackToDashboardAction(ActionEvent event) {
+        try {
+            // Load the Dashboard FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Dashboard.fxml"));
+            Parent dashboardRoot = loader.load();
+
+            // Set the user in the DashboardController
+            DashboardController dashboardController = loader.getController();
+            dashboardController.setUser(currentUser);
+            dashboardController.setShoppingCartRepository(shoppingCartRepository);
+
+            // Get the current stage and switch scenes
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(dashboardRoot));
+            stage.setTitle("The Reading Room - Dashboard");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load the dashboard.");
+        }
+    }
+
+    private boolean showConfirmation(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        return alert.showAndWait().orElse(null) == ButtonType.OK;
+    }
+
 
 
     // Show an alert message

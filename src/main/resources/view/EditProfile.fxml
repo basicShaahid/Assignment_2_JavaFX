@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.EditProfileController">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- Title -->
+    <Label text="Edit Profile" style="-fx-font-size: 20px;" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2"/>
+
+    <!-- Username (non-editable) -->
+    <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="1" editable="false"/>
+
+    <!-- First Name -->
+    <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <TextField fx:id="firstNameField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+    <!-- Last Name -->
+    <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+    <!-- Password -->
+    <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+    <!-- Save Changes Button -->
+    <Button text="Save Changes" onAction="#handleSaveChanges" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+    <!-- Back Button -->
+    <Button text="Back" onAction="#handleBackToDashboard" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+</GridPane>

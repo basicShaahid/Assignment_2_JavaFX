@@ -9,35 +9,45 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RegistrationController">
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RegistrationController"
+          hgap="10" vgap="10" alignment="CENTER">
 
-    <!-- Title -->
-    <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2">
+    <!-- Title Section -->
+    <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
         <padding>
-            <Insets top="10" right="10" bottom="10" left="10"/>
+            <Insets top="20" bottom="20"/>
         </padding>
-        <Label text="Register a New User" style="-fx-font-size: 20px;"/>
+        <Label text="Register a New User" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
     </VBox>
 
-    <!-- Username -->
+    <!-- Username Field -->
     <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-    <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="1" promptText="Enter Username"/>
 
-    <!-- Password -->
+    <!-- Password Field -->
     <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Enter Password"/>
 
-    <!-- First Name -->
+    <!-- First Name Field -->
     <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-    <TextField fx:id="firstNameField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <TextField fx:id="firstNameField" GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Enter First Name"/>
 
-    <!-- Last Name -->
+    <!-- Last Name Field -->
     <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-    <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+    <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Enter Last Name"/>
 
-    <!-- Role -->
+    <!-- Role ChoiceBox -->
     <Label text="Role:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-    <ChoiceBox fx:id="roleChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+    <ChoiceBox fx:id="roleChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="5">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="User"/>
+                <String fx:value="Admin"/>
+            </FXCollections>
+        </items>
+    </ChoiceBox>
 
     <!-- Register Button -->
     <Button text="Register" onAction="#handleRegisterButtonAction" GridPane.columnIndex="1" GridPane.rowIndex="6">

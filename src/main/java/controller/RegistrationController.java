@@ -2,6 +2,7 @@ package controller;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import model.User;
@@ -46,11 +47,26 @@ public class RegistrationController {
         String lastName = lastNameField.getText();
         String role = roleChoiceBox.getValue();  // Get the selected role
 
+        // Validate that all fields are filled
+        if (username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+            showAlert("Error", "All fields must be filled.");
+            return;
+        }
+
+        // Check if the username already exists in the UserRepository
+        if (UserRepository.getInstance().getUserByUsername(username).isPresent()) {
+            showAlert("Error", "Username is already taken. Please choose a different one.");
+            return;
+        }
+
         // Create a new user object
         User newUser = new User(username, password, firstName, lastName, role);
 
         // Add the user to the repository (or database)
         UserRepository.getInstance().addUser(newUser);
+
+        // Show success message
+        showAlert("Success", "User registered successfully!");
 
         // Navigate to the login screen
         navigateToLoginScreen();
@@ -70,5 +86,13 @@ public class RegistrationController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Utility method to show alert messages
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

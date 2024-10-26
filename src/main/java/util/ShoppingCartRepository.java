@@ -105,6 +105,7 @@ public class ShoppingCartRepository {
         }
     }
 
+
     public void removeItem(int itemId) {
         String sql = "DELETE FROM ShoppingCart WHERE id = ?";
 
@@ -118,6 +119,7 @@ public class ShoppingCartRepository {
             e.printStackTrace();
         }
     }
+
 
 
     // Checkout method to process the order for the user

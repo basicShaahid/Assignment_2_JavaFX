@@ -22,5 +22,8 @@
 
         <!-- Button to add selected book to cart -->
         <Button fx:id="addToCartButton" layoutX="150.0" layoutY="280.0" text="Add to Cart" onAction="#handleAddToCartButtonAction" />
+
+        <!-- Button to edit profile -->
+        <Button fx:id="editProfileButton" layoutX="260.0" layoutY="280.0" text="Edit Profile" onAction="#handleEditProfileButtonAction" />
     </children>
 </AnchorPane>

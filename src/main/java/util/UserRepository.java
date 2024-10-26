@@ -41,6 +41,23 @@ public class UserRepository {
         }
     }
 
+    public void updateUserProfile(User user) {
+        String sql = "UPDATE Users SET firstName = ?, lastName = ?, password = ? WHERE username = ?";
+        try (Connection conn = DatabaseHelper.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getLastName());
+            statement.setString(3, user.getPassword());
+            statement.setString(4, user.getUsername());
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     // Method to validate user credentials
     public Optional<User> validateCredentials(String username, String password) {
         String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
