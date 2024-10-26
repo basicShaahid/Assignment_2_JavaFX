@@ -123,7 +123,9 @@ public class ShoppingCartRepository {
     // Checkout method to process the order for the user
     public boolean checkout(int userId, List<ShoppingCartItem> cartItems) {
         String deleteSql = "DELETE FROM ShoppingCart WHERE userId = ?";
-        try (Connection connection = DatabaseHelper.getConnection()) {
+        Connection connection = null;
+        try {
+            connection = DatabaseHelper.getConnection();
             connection.setAutoCommit(false);  // Begin transaction
 
             // Simulate order processing (e.g., save order to Orders table)
@@ -142,18 +144,26 @@ public class ShoppingCartRepository {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try (Connection connection = DatabaseHelper.getConnection()) {
-                connection.rollback();  // Roll back transaction in case of error
-            } catch (SQLException rollbackException) {
-                rollbackException.printStackTrace();
+            if (connection != null) {
+                try {
+                    connection.rollback();  // Roll back transaction in case of error
+                } catch (SQLException rollbackException) {
+                    rollbackException.printStackTrace();
+                }
             }
             return false;
+
         } finally {
-            try (Connection connection = DatabaseHelper.getConnection()) {
-                connection.setAutoCommit(true);  // Reset auto-commit
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);  // Reset auto-commit
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
+
+
+
 }

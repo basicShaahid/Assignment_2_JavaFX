@@ -4,11 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.ShoppingCartItem;
 import model.User;
@@ -19,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public class ShoppingCartController {
 
@@ -179,20 +176,42 @@ public class ShoppingCartController {
             return;
         }
 
-        // Add checkout logic here (e.g., process payment, save order, etc.)
-        boolean isCheckoutSuccessful = shoppingCartRepository.checkout(currentUser.getId(), cartItems);
+        // Display a summary in a confirmation dialog
+        StringBuilder receipt = new StringBuilder("Receipt:\n");
+        double totalAmount = 0;
 
-        if (isCheckoutSuccessful) {
-            showAlert("Success", "Checkout successful! Your order has been placed.");
-            cartItems.clear();
-            updateTotalAmount();
-        } else {
-            showAlert("Checkout Error", "Checkout failed. Please try again.");
+        for (ShoppingCartItem item : cartItems) {
+            receipt.append(item.getTitle())
+                    .append(" x ")
+                    .append(item.getQuantity())
+                    .append(" - $")
+                    .append(item.getTotalPrice())
+                    .append("\n");
+            totalAmount += item.getTotalPrice();
+        }
+        receipt.append("\nTotal Amount: $").append(totalAmount);
+
+        // Show confirmation dialog
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Confirm Checkout");
+        confirmationAlert.setHeaderText("Proceed with Checkout?");
+        confirmationAlert.setContentText(receipt.toString());
+
+        Optional<ButtonType> result = confirmationAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Clear the cart from the database after checkout
+            boolean isCheckoutSuccessful = shoppingCartRepository.checkout(currentUser.getId(), cartItems);
+
+            if (isCheckoutSuccessful) {
+                showAlert("Checkout Complete", "Thank you! Your order has been placed.");
+                cartItems.clear();  // Clear the local cart items
+                updateTotalAmount();  // Update the total amount to reflect empty cart
+                cartTableView.setItems(FXCollections.observableArrayList(cartItems));  // Refresh the table
+            } else {
+                showAlert("Checkout Error", "There was an issue processing your checkout. Please try again.");
+            }
         }
     }
-
-    // In ShoppingCartRepository.java
-
 
 
     // Show an alert message

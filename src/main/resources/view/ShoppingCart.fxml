@@ -29,5 +29,8 @@
         <Button fx:id="updateQuantityButton" layoutX="280.0" layoutY="260.0" text="Update Quantity" onAction="#handleUpdateQuantityButtonAction" />
         <Button fx:id="removeItemButton" layoutX="380.0" layoutY="260.0" text="Remove Item" onAction="#handleRemoveItemButtonAction" />
         <Button fx:id="backButton" layoutX="480.0" layoutY="260.0" text="Back" onAction="#handleBackToDashboardAction" />
+
+        <!-- Checkout Button -->
+        <Button fx:id="checkoutButton" layoutX="480.0" layoutY="300.0" text="Checkout" onAction="#handleCheckoutButtonAction" />
     </children>
 </AnchorPane>
