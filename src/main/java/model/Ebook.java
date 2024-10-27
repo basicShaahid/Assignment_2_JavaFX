@@ -7,6 +7,8 @@ public class Ebook {
     private double price;
     private int downloads; // New field for downloads
 
+    //attemped download funcionality for books
+
     public Ebook(int id, String title, String author, double price, int downloads) {
         this.id = id;
         this.title = title;

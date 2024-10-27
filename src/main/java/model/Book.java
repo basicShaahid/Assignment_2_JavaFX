@@ -23,6 +23,7 @@ public class Book {
         this.soldCopies = soldCopies;
     }
 
+    //inactive method currently - can be used for later upgrades
     public void insertInitialBooks() {
         String sql = "INSERT INTO Books(title, author, physicalCopies, price, soldCopies) VALUES(?, ?, ?, ?, ?)";
 
@@ -61,9 +62,6 @@ public class Book {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
     public String getTitle() {
         return title;
     }
@@ -85,6 +83,10 @@ public class Book {
     }
 
     // Setters
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
