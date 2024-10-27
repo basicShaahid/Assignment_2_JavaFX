@@ -63,7 +63,6 @@ public class DashboardController {
         this.bookRepository = bookRepository;
     }
 
-
     public void setUser(User user) {
         this.currentUser = user;
         if (currentUser != null) {
@@ -76,19 +75,15 @@ public class DashboardController {
         }
     }
 
-
     @FXML
     public void initialize() {
         setupTable();
         loadTopBooks();
     }
 
-    // In DashboardController
     public void setShoppingCartRepository(ShoppingCartRepository shoppingCartRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
     }
-
-
 
     private void setupTable() {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -96,7 +91,7 @@ public class DashboardController {
         soldCopiesColumn.setCellValueFactory(new PropertyValueFactory<>("soldCopies"));
     }
 
-    public List<Book> getTop5Books() {
+    private List<Book> getTop5Books() {
         List<Book> topBooks = new ArrayList<>();
         String sql = "SELECT * FROM Books ORDER BY soldCopies DESC LIMIT 5";
 
@@ -113,7 +108,6 @@ public class DashboardController {
                         resultSet.getDouble("price"),
                         resultSet.getInt("soldCopies")
                 );
-                System.out.println("Retrieved Book: " + book.getTitle() + " - " + book.getSoldCopies() + " sold copies");
                 topBooks.add(book);
             }
         } catch (SQLException e) {
@@ -121,7 +115,6 @@ public class DashboardController {
             System.out.println("Error retrieving top books from the database.");
         }
 
-        System.out.println("Total books retrieved: " + topBooks.size());
         return topBooks;
     }
 
@@ -131,21 +124,16 @@ public class DashboardController {
         topBooksTableView.setItems(topBooks);
     }
 
-    // Event handler for the "View Cart" button
     @FXML
     private void handleViewCartButtonAction(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ShoppingCart.fxml"));
             Parent cartRoot = loader.load();
 
-            // Get the controller for ShoppingCart.fxml
             ShoppingCartController shoppingCartController = loader.getController();
-
-            // Ensure currentUser and shoppingCartRepository are set
             shoppingCartController.setCurrentUser(currentUser);
             shoppingCartController.setShoppingCartRepository(shoppingCartRepository);
 
-            // Switch to the shopping cart scene
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(cartRoot));
             stage.show();
@@ -156,10 +144,6 @@ public class DashboardController {
         }
     }
 
-
-
-
-    // Event handler for the "Add to Cart" button
     @FXML
     private void handleAddToCartButtonAction(ActionEvent event) {
         if (currentUser == null) {
@@ -169,24 +153,33 @@ public class DashboardController {
 
         Book selectedBook = topBooksTableView.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
+            int requestedQuantity = 1;  // Set default quantity to 1
+
+            // Verify stock availability
+            boolean hasStock = shoppingCartRepository.verifyStock(selectedBook.getId(), requestedQuantity);
+            if (!hasStock) {
+                showAlert("Warning", "Insufficient stock available.");
+                return;
+            }
+
+            // Create a new ShoppingCartItem with the default quantity of 1
             ShoppingCartItem cartItem = new ShoppingCartItem(
                     0,                          // Placeholder for cart item ID, if needed
                     selectedBook.getTitle(),
                     selectedBook.getAuthor(),
                     selectedBook.getPrice(),
-                    1,                          // Default quantity
+                    requestedQuantity,          // Default quantity set to 1
                     selectedBook.getId(),
                     currentUser.getId()          // Use the actual user ID
             );
 
             shoppingCartRepository.addItem(cartItem);
-            showAlert("Success", "Book added to cart.");
+            showAlert("Success", "Book added to cart with quantity 1.");
         } else {
             showAlert("Warning", "No book selected. Please select a book to add to the cart.");
         }
     }
 
-    // In DashboardController.java
 
     @FXML
     public void handleEditProfileButtonAction(ActionEvent event) {
@@ -209,8 +202,24 @@ public class DashboardController {
             showAlert("Unexpected Error", "An error occurred: " + ex.getMessage());
         }
     }
+    @FXML
+    private void handleLogoutButtonAction(ActionEvent event) {
+        try {
+            // Load the Login FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+            Parent loginRoot = loader.load();
 
+            // Get the current stage and set the login scene
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(loginRoot));
+            stage.setTitle("The Reading Room - Login");
+            stage.show();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load the login screen.");
+        }
+    }
 
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

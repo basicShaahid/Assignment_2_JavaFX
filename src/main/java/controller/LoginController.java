@@ -42,13 +42,18 @@ public class LoginController {
         User loggedInUser = authenticateUser(username, password);
 
         if (loggedInUser != null) {
-            loadDashboard(loggedInUser, event);
+            // Check if the user is an admin or a regular user
+            if ("Admin".equalsIgnoreCase(loggedInUser.getRole())) {
+                loadAdminDashboard(event, loggedInUser); // Corrected parameter order
+            } else {
+                loadUserDashboard(loggedInUser, event);
+            }
         } else {
             showAlert("Error", "Invalid username or password.");
         }
     }
 
-    private void loadDashboard(User user, ActionEvent event) {
+    private void loadUserDashboard(User user, ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Dashboard.fxml"));
             Parent dashboardRoot = loader.load();
@@ -61,13 +66,36 @@ public class LoginController {
             // Switch to the dashboard scene
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(dashboardRoot));
+            stage.setTitle("User Dashboard");
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Error", "Failed to load the dashboard.");
+            showAlert("Error", "Failed to load the User Dashboard.");
         }
     }
+
+    private void loadAdminDashboard(ActionEvent event, User user) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AdminDashboard.fxml"));
+            Parent adminDashboardRoot = loader.load();
+
+            // Initialize the AdminController with the logged-in admin user
+            AdminController adminController = loader.getController();
+            adminController.setUser(user);
+
+            // Switch to the admin dashboard scene
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(adminDashboardRoot));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load the admin dashboard.");
+        }
+    }
+
+
 
     @FXML
     private void navigateToRegistrationScreen(ActionEvent event) {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.ViewOrdersController">
+    <center>
+        <TableView fx:id="ordersTableView">
+            <columns>
+                <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="100"/>
+                <TableColumn fx:id="orderDateColumn" text="Order Date" prefWidth="200"/>
+                <TableColumn fx:id="totalPriceColumn" text="Total Price (AUD)" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

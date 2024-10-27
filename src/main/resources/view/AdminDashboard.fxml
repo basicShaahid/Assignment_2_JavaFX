@@ -3,46 +3,56 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.geometry.Insets?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.AdminController">
     <center>
-        <VBox spacing="10" alignment="center">
+        <VBox spacing="10" alignment="CENTER">
             <!-- Title Label -->
             <Label text="Admin Dashboard - Manage Books" style="-fx-font-size: 16px;"/>
 
             <!-- TableView for displaying books -->
-            <TableView fx:id="bookTableView">
+            <TableView fx:id="bookTableView" prefWidth="600.0" prefHeight="300.0">
                 <columns>
-                    <TableColumn text="Title" fx:id="titleColumn"/>
-                    <TableColumn text="Author" fx:id="authorColumn"/>
-                    <TableColumn text="Price (AUD)" fx:id="priceColumn"/>
-                    <TableColumn text="Physical Copies" fx:id="copiesColumn"/>
-                    <TableColumn text="Sold Copies" fx:id="soldColumn"/>
+                    <TableColumn text="Title" fx:id="titleColumn" prefWidth="150.0"/>
+                    <TableColumn text="Author" fx:id="authorColumn" prefWidth="150.0"/>
+                    <TableColumn text="Price (AUD)" fx:id="priceColumn" prefWidth="100.0"/>
+                    <TableColumn text="Physical Copies" fx:id="copiesColumn" prefWidth="100.0"/>
+                    <TableColumn text="Sold Copies" fx:id="soldColumn" prefWidth="100.0"/>
                 </columns>
             </TableView>
         </VBox>
     </center>
 
     <bottom>
-        <VBox spacing="10" alignment="center">
-            <GridPane hgap="10" vgap="10">
+        <VBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <GridPane hgap="10" vgap="10" alignment="CENTER">
                 <!-- Form fields for book details -->
-                <Label text="Title:"/>
-                <TextField fx:id="titleField"/>
-                <Label text="Author:"/>
-                <TextField fx:id="authorField"/>
-                <Label text="Price (AUD):"/>
-                <TextField fx:id="priceField"/>
-                <Label text="Physical Copies:"/>
-                <TextField fx:id="copiesField"/>
-                <Label text="Sold Copies:"/>
-                <TextField fx:id="soldField"/>
+                <Label text="Title:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="titleField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Author:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="authorField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Price (AUD):" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="priceField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Physical Copies:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="copiesField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="Sold Copies:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="soldField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
             </GridPane>
 
             <!-- Buttons for managing books -->
-            <HBox spacing="10" alignment="center">
-                <Button text="Add Book" onAction="#addBook"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Add Book" onAction="#handleAddBookButtonAction"/>
                 <Button text="Update Book" onAction="#updateBook"/>
                 <Button text="Delete Book" onAction="#deleteBook"/>
+                <Button text="Logout" onAction="#handleLogoutButtonAction" layoutX="500" layoutY="20"/>
+
             </HBox>
         </VBox>
     </bottom>

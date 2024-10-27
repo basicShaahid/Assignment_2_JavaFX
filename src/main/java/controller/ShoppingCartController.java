@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.ShoppingCartItem;
 import model.User;
@@ -230,19 +231,23 @@ public class ShoppingCartController {
 
         Optional<ButtonType> result = confirmationAlert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Clear the cart from the database after checkout
-            boolean isCheckoutSuccessful = shoppingCartRepository.checkout(currentUser.getId(), cartItems);
+            // Prompt for payment details
+            if (collectPaymentDetails()) {
+                // Process checkout
+                boolean isCheckoutSuccessful = shoppingCartRepository.checkout(currentUser.getId(), cartItems);
 
-            if (isCheckoutSuccessful) {
-                showAlert("Checkout Complete", "Thank you! Your order has been placed.");
-                cartItems.clear();  // Clear the local cart items
-                updateTotalAmount();  // Update the total amount to reflect empty cart
-                cartTableView.setItems(FXCollections.observableArrayList(cartItems));  // Refresh the table
-            } else {
-                showAlert("Checkout Error", "There was an issue processing your checkout. Please try again.");
+                if (isCheckoutSuccessful) {
+                    showAlert("Checkout Complete", "Thank you! Your order has been placed.");
+                    cartItems.clear();  // Clear the local cart items
+                    updateTotalAmount();  // Update the total amount to reflect empty cart
+                    cartTableView.setItems(FXCollections.observableArrayList(cartItems));  // Refresh the table
+                } else {
+                    showAlert("Checkout Error", "There was an issue processing your checkout. Please try again.");
+                }
             }
         }
     }
+
 
     @FXML
     private void handleBackToDashboardAction(ActionEvent event) {
@@ -277,6 +282,63 @@ public class ShoppingCartController {
         return alert.showAndWait().orElse(null) == ButtonType.OK;
     }
 
+    private boolean collectPaymentDetails() {
+        TextInputDialog cardDialog = new TextInputDialog();
+        cardDialog.setTitle("Payment Information");
+        cardDialog.setHeaderText("Enter Credit Card Information");
+
+        // Card Number
+        TextField cardNumberField = new TextField();
+        cardNumberField.setPromptText("Card Number (16 digits)");
+
+        // Expiry Date
+        TextField expiryDateField = new TextField();
+        expiryDateField.setPromptText("Expiry Date (MM/YY)");
+
+        // CVV
+        TextField cvvField = new TextField();
+        cvvField.setPromptText("CVV (3 digits)");
+
+        VBox dialogContent = new VBox();
+        dialogContent.getChildren().addAll(
+                new Label("Card Number:"), cardNumberField,
+                new Label("Expiry Date:"), expiryDateField,
+                new Label("CVV:"), cvvField
+        );
+        cardDialog.getDialogPane().setContent(dialogContent);
+
+        Optional<String> result = cardDialog.showAndWait();
+        if (result.isPresent()) {
+            String cardNumber = cardNumberField.getText();
+            String expiryDate = expiryDateField.getText();
+            String cvv = cvvField.getText();
+
+            // Validate Card Information
+            if (validateCardDetails(cardNumber, expiryDate, cvv)) {
+                return true;
+            } else {
+                showAlert("Payment Error", "Invalid payment details. Please check and try again.");
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private boolean validateCardDetails(String cardNumber, String expiryDate, String cvv) {
+        // Validate card number (16 digits)
+        if (!cardNumber.matches("\\d{16}")) {
+            return false;
+        }
+        // Validate expiry date (MM/YY format)
+        if (!expiryDate.matches("(0[1-9]|1[0-2])/\\d{2}")) {
+            return false;
+        }
+        // Validate CVV (3 digits)
+        if (!cvv.matches("\\d{3}")) {
+            return false;
+        }
+        return true;
+    }
 
 
     // Show an alert message

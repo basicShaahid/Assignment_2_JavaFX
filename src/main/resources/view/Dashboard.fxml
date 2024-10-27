@@ -25,5 +25,8 @@
 
         <!-- Button to edit profile -->
         <Button fx:id="editProfileButton" layoutX="260.0" layoutY="280.0" text="Edit Profile" onAction="#handleEditProfileButtonAction" />
+
+        <Button text="Logout" onAction="#handleLogoutButtonAction" layoutX="500" layoutY="20"/>
+
     </children>
 </AnchorPane>
