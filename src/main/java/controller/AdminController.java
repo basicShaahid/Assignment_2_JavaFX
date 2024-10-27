@@ -57,7 +57,7 @@ public class AdminController {
 
     private ObservableList<Book> bookInventoryList;
 
-    private User currentUser; // Add this field to store the admin user information
+    private User currentUser; // This field to store the admin user information
 
     public void setUser(User user) {
         this.currentUser = user;
@@ -147,7 +147,7 @@ public class AdminController {
             // Optionally, clear the fields after updating
             clearInputFields();
 
-            // Notify user of successful update
+            // Notify user of successful update..
             showAlert("Success", "Book details updated successfully.");
 
         } catch (NumberFormatException e) {

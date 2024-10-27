@@ -48,6 +48,8 @@ public class DashboardController {
     private TableColumn<Book, Integer> soldCopiesColumn;
 
     private User currentUser;
+
+    //Do not touch below 2 varibale declarations
     private UserRepository userRepository;
     private BookRepository bookRepository;
     private ShoppingCartRepository shoppingCartRepository;
@@ -91,6 +93,7 @@ public class DashboardController {
         soldCopiesColumn.setCellValueFactory(new PropertyValueFactory<>("soldCopies"));
     }
 
+    //currently inactive, serves purpose to display top 5 books along with other books
     private List<Book> getTop5Books() {
         List<Book> topBooks = new ArrayList<>();
         String sql = "SELECT * FROM Books ORDER BY soldCopies DESC LIMIT 5";
@@ -164,13 +167,13 @@ public class DashboardController {
 
             // Create a new ShoppingCartItem with the default quantity of 1
             ShoppingCartItem cartItem = new ShoppingCartItem(
-                    0,                          // Placeholder for cart item ID, if needed
+                    0, // Placeholder for cart item ID,
                     selectedBook.getTitle(),
                     selectedBook.getAuthor(),
                     selectedBook.getPrice(),
-                    requestedQuantity,          // Default quantity set to 1
+                    requestedQuantity, // Default quantity set to 1
                     selectedBook.getId(),
-                    currentUser.getId()          // Use the actual user ID
+                    currentUser.getId()  // Use the actual user ID
             );
 
             shoppingCartRepository.addItem(cartItem);

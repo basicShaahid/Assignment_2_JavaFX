@@ -34,17 +34,13 @@ public class Main extends Application {
             }
         });
 
-        // Set up shutdown hook to clear cart on application exit
+        // Set up for shutdown hook to clear cart on application exit
         primaryStage.setOnCloseRequest(event -> {
             if (currentUser != null && shoppingCartRepository != null) {
                 shoppingCartRepository.clearCartForUser(currentUser.getId());
                 System.out.println("Cart cleared for user: " + currentUser.getId());
             }
         });
-    }
-
-    public static void setCurrentUser(User user) {
-        currentUser = user;
     }
 
     public static void main(String[] args) {
