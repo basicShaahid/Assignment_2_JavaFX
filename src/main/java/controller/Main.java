@@ -1,5 +1,9 @@
 package controller;
 
+/*Declaration of code : Done by Shaahid Fawzi
+No external third party application were used during this time, references throughout the assignment were from canvas, advanced programming materials and stackOverFLow.
+*/
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
